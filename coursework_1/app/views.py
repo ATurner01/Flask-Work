@@ -1,7 +1,10 @@
+from flask import render_template
 from app import app
 
 
 @app.route('/')
 def index():
-    return "Test. Hello World!"
+    return render_template("page1.html",
+                           title="Sample Page")
+
 

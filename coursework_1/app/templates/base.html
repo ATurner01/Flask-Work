@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Placeholder</title>
+    {% endif %}
+  </head>
+
+  <body>
+    <nav>
+      <ul>
+        <li>Link 1</li>
+        <li>Link 2</li>
+        <li>Line 3</li>
+      </ul>
+    </nav>
+
+    {% block content %}{% endblock %}
+  </body>
+</html>
