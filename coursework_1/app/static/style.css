@@ -1,20 +1,33 @@
+html{
+  height: 100%;
+}
 body{
   position: relative;
   min-height: 100%;
   margin: 0;
   padding: 0;
 }
-/*change this to a horizontal bar later */
+nav{
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 nav ul{
   list-style-type: none;
   width: 200px;
   position: absolute;
   height: 100%;
   margin: 0;
-  padding: 0;
+  padding-left: 25px;
+  padding-top: 15px;
+  background-color: grey;
+  font-size: 18px;
+}
+nav li{
+  margin: 0 0 25px 0;
 }
 p,div{
-  margin-left: 200px;
+  margin-left: 225px;
   padding: 1px 16px;
   height: 100%;
 }
