@@ -1,6 +1,7 @@
 from flask import render_template, flash
 from app import app, db, models
 from .forms import TaskForm
+import datetime
 
 
 @app.route('/')
@@ -23,7 +24,7 @@ def create_task():
     if form.validate_on_submit():
         flash("Succesfully received form data.")
 
-        task = models.Task(title=form.title.data, description=form.desc.data, completed=False)
+        task = models.Task(title=form.title.data, description=form.desc.data, date=datetime.date.now(), completed=False)
         db.session.add(task)
         db.session.commit()
 
