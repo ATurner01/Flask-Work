@@ -1,12 +1,15 @@
 from flask import render_template, flash
-from app import app
+from app import app, db, models
 from .forms import TaskForm
 
 
 @app.route('/')
 def index():
+    tasks = models.Task.query.all()
+
     return render_template("view_tasks.html",
-                           title="Sample Page")
+                           title="Tasks",
+                           tasks=tasks)
 
 @app.route('/completed')
 def display_completed():
@@ -16,10 +19,15 @@ def display_completed():
 @app.route('/add_task', methods=['GET', 'POST'])
 def create_task():
     form = TaskForm()
+
+    if form.validate_on_submit():
+        flash("Succesfully received form data.")
+
+        task = models.Task(title=form.title.data, description=form.desc.data, completed=False)
+        db.session.add(task)
+        db.session.commit()
+
+
     return render_template("create_task.html",
                            title="Create New Task.",
                            form=form)
-
-
-
-

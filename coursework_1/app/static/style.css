@@ -26,8 +26,19 @@ nav ul{
 nav li{
   margin: 0 0 25px 0;
 }
-p,div{
-  margin-left: 225px;
-  padding: 1px 16px;
+div{
+  margin-left: 250px;
   height: 100%;
+}
+#tasks{
+  border-style: solid;
+  margin-top: 25px;
+}
+#title{
+  font-size: 20px;
+  margin-left: 20px;
+}
+#desc{
+  font-size: 16px;
+  margin-left: 20px;
 }

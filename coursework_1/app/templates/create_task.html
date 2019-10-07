@@ -1,14 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Create New Task</h1>
-  <form action="" method="post" name="task">
-    {{ form.hidden_tag() }}
-    <p>
-      {{ form.title }}<br>
-    </p>
-    <p>
-      {{ form.desc }}<br>
-    </p>
-    <p><input type="submit" value="Task"></p>
-  </form>  
+  <div>
+    <h1>Create New Task</h1>
+    <form action="" method="post" name="task">
+      {{ form.hidden_tag() }}
+      <p>
+        Task:<br>
+        {{ form.title }}<br>
+      </p>
+      <p>
+        Task Description: (Optional. Max 500 characters.)<br>
+        {{ form.desc }}<br>
+      </p>
+      <p><input type="submit" value="Task"></p>
+    </form>
+    {% with messages=get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
 {% endblock %}

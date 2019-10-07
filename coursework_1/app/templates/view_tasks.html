@@ -1,4 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-  <p>Test. Hello World!</p>
+  <h1>Tasks</h1>
+  {% for task in tasks %}
+    <div id="tasks">
+      <p id="title">Title: {{ task.title }}</p>
+      <p id="desc">Description: {{ task.description }}</p><br>
+    </div>
+  {% endfor %}
 {% endblock %}
