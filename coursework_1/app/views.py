@@ -5,7 +5,7 @@ import datetime
 
 
 @app.route('/')
-def index():
+def display_tasks():
     tasks = models.Task.query.all()
 
     return render_template("view_tasks.html",
@@ -24,7 +24,7 @@ def create_task():
     if form.validate_on_submit():
         flash("Succesfully received form data.")
 
-        task = models.Task(title=form.title.data, description=form.desc.data, date=datetime.date.now(), completed=False)
+        task = models.Task(title=form.title.data, description=form.desc.data, date=datetime.date.today(), completed=False)
         db.session.add(task)
         db.session.commit()
 

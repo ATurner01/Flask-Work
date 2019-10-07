@@ -36,12 +36,24 @@ h1{
 #tasks{
   border-style: solid;
   margin-top: 25px;
+  width: 50%;
+  display: block;
 }
 #title{
   font-size: 20px;
   margin-left: 20px;
+  display: inline-block;
 }
 #desc{
   font-size: 16px;
   margin-left: 20px;
+}
+#date{
+  font-size:16px;
+  margin-left: 20px;
+}
+#complete{
+  float: right;
+  padding-right: 10px;
+  display: inline-block;
 }
