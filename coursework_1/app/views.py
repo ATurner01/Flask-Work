@@ -1,16 +1,22 @@
-from flask import render_template, flash
+from flask import render_template, flash, request
 from app import app, db, models
-from .forms import TaskForm
+from .forms import TaskForm, CompleteForm
 import datetime
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def display_tasks():
     tasks = models.Task.query.all()
+    form = CompleteForm()
+
+    if form.validate_on_submit():
+        models.Task.query,get(1).completed = True
+        db.session.commit()
 
     return render_template("view_tasks.html",
                            title="Tasks",
-                           tasks=tasks)
+                           tasks=tasks,
+                           form=form)
 
 @app.route('/completed')
 def display_completed():

@@ -5,7 +5,10 @@
     {% if not task.completed %}
       <div id="tasks">
         <p id="title">Title: {{ task.title }}</p>
-        <p id="complete"><input type="checkbox" value="Complete"></p>
+        <form id="complete" action="" method="post" name="completed">
+          {{ form.hidden_tag() }}
+          {{ form.complete }}
+        </form>
         <p id="desc">Description: {{ task.description }}</p>
         <p id="date">Date Added: {{ task.date }}</p><br>
       </div>
