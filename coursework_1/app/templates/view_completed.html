@@ -1,4 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-  <p>Hello World!!! Completed tasks go here.</p>
+  <h1>Completed Tasks</h1>
+  {% for task in tasks %}
+    {% if task.completed %}
+      <div id="tasks">
+        <p id="title">Title: {{ task.title }}</p>
+        <p id="desc">Description: {{ task.description }}</p>
+        <p id="date">Date Added: {{ task.date }}</p><br>
+      </div>
+    {% endif %}
+  {% endfor %}
 {% endblock %}

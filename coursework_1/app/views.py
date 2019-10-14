@@ -1,4 +1,4 @@
-from flask import render_template, flash, request
+from flask import render_template, flash, request, redirect
 from app import app, db, models
 from .forms import TaskForm, CompleteForm
 import datetime
@@ -20,8 +20,11 @@ def display_tasks():
 
 @app.route('/completed')
 def display_completed():
+    tasks = models.Task.query.all()
+    
     return render_template("view_completed.html",
-                           title="Completed Tasks")
+                           title="Completed Tasks",
+                           tasks=tasks)
 
 @app.route('/add_task', methods=['GET', 'POST'])
 def create_task():
@@ -38,3 +41,11 @@ def create_task():
     return render_template("create_task.html",
                            title="Create New Task.",
                            form=form)
+
+@app.route('/update', methods=['GET', 'POST'])
+def update_record():
+    id = request.form.getlist('id')
+    models.Task.query.get(id[0]).completed = True
+    db.session.commit()
+
+    return redirect('/')

@@ -5,9 +5,9 @@
     {% if not task.completed %}
       <div id="tasks">
         <p id="title">Title: {{ task.title }}</p>
-        <form id="complete" action="" method="post" name="completed">
-          {{ form.hidden_tag() }}
-          {{ form.complete }}
+        <form id="complete" action="/update" method="POST" name="completed">
+          <input type="submit" value="Complete">
+          <input type="hidden" name="id" value="{{ task.id }}">
         </form>
         <p id="desc">Description: {{ task.description }}</p>
         <p id="date">Date Added: {{ task.date }}</p><br>
