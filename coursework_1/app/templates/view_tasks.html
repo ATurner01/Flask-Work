@@ -6,7 +6,7 @@
       <div id="tasks">
         <p id="title">Title: {{ task.title }}</p>
         <form id="complete" action="/update" method="POST" name="completed">
-          <input type="submit" value="Complete">
+          <input type="checkbox" value="Complete" onchange="this.form.submit()">
           <input type="hidden" name="id" value="{{ task.id }}">
         </form>
         <p id="desc">Description: {{ task.description }}</p>
