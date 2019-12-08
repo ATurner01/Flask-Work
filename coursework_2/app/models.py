@@ -21,7 +21,7 @@ class User(db.Model):
 
     def get_id(self):
         """Need to convert user identifier to Unicode value"""
-        return chr(self.id)
+        return self.username
 
     def __repr__(self):
         return "%s %s %s" % (self.id, self.username, self.email)

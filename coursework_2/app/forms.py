@@ -11,7 +11,7 @@ class LoginForm(Form):
 class RegisterForm(Form):
     username = TextField('username', validators=[DataRequired()])
     password = TextField('password', validators=[DataRequired()])
-    email = TextField('password'. validators=[DataRequired()])
+    email = TextField('password', validators=[DataRequired()])
 
 
     
