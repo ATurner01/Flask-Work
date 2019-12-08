@@ -9,7 +9,12 @@ from .forms import LoginForm, RegisterForm
 def user_loader(user_id):
     return models.User.query.filter_by(username=user_id).first()
 
-@app.route('/', methods=['GET', 'POST'])
+@login_manager.unauthorized_handler
+def unauthorized():
+    flash("You must be logged in to access this page.")
+    return redirect('/login')
+
+@app.route('/login', methods=['GET', 'POST'])
 def Login():
     form = LoginForm()
 
@@ -21,7 +26,7 @@ def Login():
                 db.session.add(user)
                 db.session.commit()
                 login_user(user, remember=True)
-                return redirect('/home')
+                return redirect('/')
             else:
                 flash("Incorrect username or password.")
         else:
@@ -29,7 +34,8 @@ def Login():
         
     return render_template("login.html",
                            title="Login",
-                           form=form)
+                           form=form,
+                           user=None)
 
 @app.route('/register', methods=['GET', 'POST'])
 def Register():
@@ -42,14 +48,15 @@ def Register():
             db.session.add(user)
             db.session.commit()
             flash("Account creation successful. You may now login.")
-            return redirect('/')
+            return redirect('/login')
         except IntegrityError:
             db.session.rollback()
             flash("Error. Username is already in use. Please choose a different one.")
 
     return render_template("register.html",
                            title="Register",
-                           form=form)
+                           form=form,
+                           user=None)
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
@@ -62,11 +69,12 @@ def Logout():
 
     return redirect('/')
 
-@app.route('/home')
-@login_required
+@app.route('/')
 def Home():
+    user = current_user
     return render_template("home.html",
-                           title="Home")
+                           title="Home",
+                           user=user)
 
 @app.route('/account')
 @login_required
