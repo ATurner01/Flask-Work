@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Account Details</h1>
+  <p>Username: {{ user.username }}</p>
+  <p>Email: {{ user.email }}</p><br>
+  <form action="/account" method="get">
+    <button type="submit">(PH)Change Password(PH)</button>
+  </form>
+{% endblock %}

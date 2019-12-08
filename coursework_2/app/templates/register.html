@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
+  <style>
+    .navbar{
+      display: none;
+    }
+  </style>
+
   <h1>Register</h1>
   <form action="" method="post" name="register">
     {{ form.hidden_tag() }}
@@ -8,4 +14,14 @@
     <p>Password: {{ form.password }}</p>
     <p><input type="submit" value="Create Account"></p>
   </form>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {%for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 {% endblock %}

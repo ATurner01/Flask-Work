@@ -1,5 +1,6 @@
 from flask import render_template, flash, redirect
 from flask_login import login_required, login_user, logout_user, current_user
+from sqlalchemy.exc import IntegrityError
 from passlib.hash import sha256_crypt
 from app import app, db, models, login_manager
 from .forms import LoginForm, RegisterForm
@@ -35,12 +36,16 @@ def Register():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        passHash = sha256_crypt.encrypt(form.password.data)
-        user = models.User(username=form.username.data,password=passHash,email=form.email.data)
-        db.session.add(user)
-        db.session.commit()
-        flash("Account creation successful. You may now login.")
-        return redirect('/')
+        try:
+            passHash = sha256_crypt.encrypt(form.password.data)
+            user = models.User(username=form.username.data,password=passHash,email=form.email.data)
+            db.session.add(user)
+            db.session.commit()
+            flash("Account creation successful. You may now login.")
+            return redirect('/')
+        except IntegrityError:
+            db.session.rollback()
+            flash("Error. Username is already in use. Please choose a different one.")
 
     return render_template("register.html",
                            title="Register",
@@ -63,4 +68,11 @@ def Home():
     return render_template("home.html",
                            title="Home")
 
+@app.route('/account')
+@login_required
+def Account():
+    user = current_user
+    return render_template("account.html",
+                           title="Account",
+                           user=user)
 
