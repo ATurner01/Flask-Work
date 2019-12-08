@@ -7,21 +7,30 @@ from .forms import LoginForm, RegisterForm
 
 @login_manager.user_loader
 def user_loader(user_id):
+    """Tells flask-login how to load a user account"""
+    
     return models.User.query.filter_by(username=user_id).first()
 
 @login_manager.unauthorized_handler
 def unauthorized():
+    """Return this message and send the user to the login page
+    if they are not logged in"""
+    
     flash("You must be logged in to access this page.")
     return redirect('/login')
 
 @app.route('/login', methods=['GET', 'POST'])
 def Login():
+    """Queries the User table and attempts to log them in based on the
+    provided account information"""
+    
     form = LoginForm()
 
     if form.validate_on_submit():
         user = models.User.query.filter_by(username=form.username.data).first()
         if user:
             if sha256_crypt.verify(form.password.data, user.password):
+                #Update the user's authentication status before logging in
                 user.authenticated = True
                 db.session.add(user)
                 db.session.commit()
@@ -39,17 +48,22 @@ def Login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def Register():
+    """Attempts to register a new user to the system based on the provided
+    information."""
+    
     form = RegisterForm()
 
     if form.validate_on_submit():
         try:
-            passHash = sha256_crypt.encrypt(form.password.data)
+            passHash = sha256_crypt.encrypt(form.password.data) #Hash the users password for storage in the DB
             user = models.User(username=form.username.data,password=passHash,email=form.email.data)
             db.session.add(user)
             db.session.commit()
             flash("Account creation successful. You may now login.")
             return redirect('/login')
         except IntegrityError:
+            #In the event the user enters a username that is already in use, rollback the current session
+            #and have them try again
             db.session.rollback()
             flash("Error. Username is already in use. Please choose a different one.")
 
@@ -61,16 +75,20 @@ def Register():
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def Logout():
+    """Logout the current user (if there is a user currently logged in)"""
+    
     user = current_user
-    user.authenticated = False
+    user.authenticated = False #Update the state of the user to make them unauthorised
     db.session.add(user)
     db.session.commit()
-    logout_user()
+    logout_user() #Calls flask-login's logout function to ensure session is correctly terminated
 
     return redirect('/')
 
 @app.route('/')
 def Home():
+    """Displays the Homepage of the website to the user"""
+    
     user = current_user
     return render_template("home.html",
                            title="Home",
@@ -79,6 +97,8 @@ def Home():
 @app.route('/account')
 @login_required
 def Account():
+    """Show the user their account information if they are logged in"""
+    
     user = current_user
     return render_template("account.html",
                            title="Account",
