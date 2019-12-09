@@ -2,8 +2,20 @@
 {% block content %}
   <h1>Account Details</h1>
   <p>Username: {{ user.username }}</p>
-  <p>Email: {{ user.email }}</p><br>
-  <form action="/account" method="get">
-    <button type="submit">(PH)Change Password(PH)</button>
+  <p>Email: {{ user.email }}</p>
+  <p>Password Last Updated: {{ user.password_last_update }}</p><br>
+  <form action="/update_password" method="get">
+    <button type="submit">Change Password</button>
   </form>
+  <br>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 {% endblock %}

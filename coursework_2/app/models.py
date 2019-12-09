@@ -1,10 +1,12 @@
 from app import db
+from datetime import date
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), index=True, unique=True)
     password = db.Column(db.String(64))
+    password_last_update = db.Column(db.Date, default=date.today())
     email = db.Column(db.String(255), index=True, unique=True)
     authenticated = db.Column(db.Boolean, default=False)
 

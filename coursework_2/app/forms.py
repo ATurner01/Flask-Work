@@ -14,4 +14,12 @@ class RegisterForm(Form):
     email = TextField('password', validators=[DataRequired()])
 
 
+class PasswordUpdateForm(Form):
+    current_password = PasswordField('current_password', validators=[DataRequired()])
+    new_password = PasswordField('new_password', validators=[DataRequired()])
+    confirm_password = PasswordField('confirm_password', validators=[DataRequired()])
+    
+    
+
+
     

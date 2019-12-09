@@ -2,8 +2,9 @@ from flask import render_template, flash, redirect
 from flask_login import login_required, login_user, logout_user, current_user
 from sqlalchemy.exc import IntegrityError
 from passlib.hash import sha256_crypt
+from datetime import date
 from app import app, db, models, login_manager
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, PasswordUpdateForm
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -56,7 +57,7 @@ def Register():
     if form.validate_on_submit():
         try:
             passHash = sha256_crypt.encrypt(form.password.data) #Hash the users password for storage in the DB
-            user = models.User(username=form.username.data,password=passHash,email=form.email.data)
+            user = models.User(username=form.username.data,password=passHash,password_last_update=date.today(),email=form.email.data)
             db.session.add(user)
             db.session.commit()
             flash("Account creation successful. You may now login.")
@@ -71,6 +72,34 @@ def Register():
                            title="Register",
                            form=form,
                            user=None)
+
+@app.route('/update_password', methods=['GET', 'POST'])
+@login_required
+def UpdatePassword():
+    """Updates the user password to the new password they have provided"""
+    
+    user = current_user
+    form = PasswordUpdateForm()
+
+    if form.validate_on_submit():
+        if sha256_crypt.verify(form.current_password.data, user.password):
+            if (form.new_password.data == form.confirm_password.data):
+                newPassHash = sha256_crypt.encrypt(form.new_password.data)
+                user.password = newPassHash
+                user.password_last_update = date.today()
+                db.session.add(user)
+                db.session.commit()
+                flash("Password updated successfully.")
+                return redirect('/account')
+            else:
+                flash("You must confirm your password by entering the same password twice.")
+        else:
+            flash("Your current password is incorrect.")
+
+    return render_template("update_password.html",
+                           title="Update Password",
+                           user=user,
+                           form=form)
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
