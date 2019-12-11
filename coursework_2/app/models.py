@@ -45,8 +45,8 @@ class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rating = db.Column(db.Integer)
     comment = db.Column(db.String(500))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    book_id = db.Column(db.Integer, db.ForeignKey('book.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), primary_key=True)
 
     def __repr__(self):
         return "%s %s %s %s %s" % (self.id, self.rating, self.comment, self.user_id, self.book_id)
