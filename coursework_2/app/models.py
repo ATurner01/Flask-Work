@@ -34,6 +34,8 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(128), index=True, unique=True)
     author = db.Column(db.String(255), index=True)
+    image = db.Column(db.String(512), default=None)
+    description = db.Column(db.String(512), default=None)
     release_date = db.Column(db.Date, default=None)
     reviews = db.relationship('Review', backref='book', lazy='dynamic')
 
@@ -50,4 +52,3 @@ class Review(db.Model):
 
     def __repr__(self):
         return "%s %s %s %s %s" % (self.id, self.rating, self.comment, self.user_id, self.book_id)
-

@@ -9,14 +9,14 @@ from .forms import LoginForm, RegisterForm, PasswordUpdateForm
 @login_manager.user_loader
 def user_loader(user_id):
     """Tells flask-login how to load a user account"""
-    
+
     return models.User.query.filter_by(username=user_id).first()
 
 @login_manager.unauthorized_handler
 def unauthorized():
     """Return this message and send the user to the login page
     if they are not logged in"""
-    
+
     flash("You must be logged in to access this page.")
     return redirect('/login')
 
@@ -24,7 +24,7 @@ def unauthorized():
 def Login():
     """Queries the User table and attempts to log them in based on the
     provided account information"""
-    
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -41,7 +41,7 @@ def Login():
                 flash("Incorrect username or password.")
         else:
             flash("Account does not exist.")
-        
+
     return render_template("login.html",
                            title="Login",
                            form=form,
@@ -51,7 +51,7 @@ def Login():
 def Register():
     """Attempts to register a new user to the system based on the provided
     information."""
-    
+
     form = RegisterForm()
 
     if form.validate_on_submit():
@@ -77,7 +77,7 @@ def Register():
 @login_required
 def UpdatePassword():
     """Updates the user password to the new password they have provided"""
-    
+
     user = current_user
     form = PasswordUpdateForm()
 
@@ -105,7 +105,7 @@ def UpdatePassword():
 @login_required
 def Logout():
     """Logout the current user (if there is a user currently logged in)"""
-    
+
     user = current_user
     user.authenticated = False #Update the state of the user to make them unauthorised
     db.session.add(user)
@@ -117,7 +117,7 @@ def Logout():
 @app.route('/')
 def Home():
     """Displays the Homepage of the website to the user"""
-    
+
     user = current_user
     return render_template("home.html",
                            title="Home",
@@ -127,9 +127,19 @@ def Home():
 @login_required
 def Account():
     """Show the user their account information if they are logged in"""
-    
+
     user = current_user
     return render_template("account.html",
                            title="Account",
                            user=user)
 
+
+@app.route('/list_books')
+def ListBooks():
+    user = current_user
+    books = models.Book.query.all()
+
+    return render_template("list_books.html",
+                            title="List Books",
+                            user=user,
+                            books=books)
