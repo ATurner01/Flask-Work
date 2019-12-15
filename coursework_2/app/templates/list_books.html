@@ -7,7 +7,14 @@
         <p>Title: {{ book.title }}</p>
         <p>Author: {{ book.author }}</p>
         <p>Release Date: {{ book.release_date }}</p>
-        <p><a href="">View more information</a></p>
+        <form action="/details" method="post" name="Details">
+          <input type="button" value="View More Details" onclick="this.form.submit()">
+          <input type="hidden" name="id" value="{{ book.id }}">
+        </form>
+        <br>
+        <form action="" method="post" name="Add">
+          <input type="button" value="Add Book to Collection">
+        </form>
       </div>
       <div class="col-md-6">
         {% if book.image %}

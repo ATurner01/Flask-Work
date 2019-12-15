@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect
+from flask import render_template, flash, redirect, request
 from flask_login import login_required, login_user, logout_user, current_user
 from sqlalchemy.exc import IntegrityError
 from passlib.hash import sha256_crypt
@@ -143,3 +143,16 @@ def ListBooks():
                             title="List Books",
                             user=user,
                             books=books)
+
+@app.route('/details', methods=['GET', 'POST'])
+def Details():
+    user = current_user
+    id = request.form.getlist('id')
+    book = models.Book.query.get(id[0])
+
+    return render_template("details.html",
+                           title=book.title,
+                           user=user,
+                           book=book)
+
+
