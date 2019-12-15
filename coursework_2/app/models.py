@@ -2,6 +2,11 @@ from app import db
 from datetime import date
 
 
+owns = db.Table('owns',
+                db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+                db.Column('book_id', db.Integer, db.ForeignKey('book.id'), primary_key=True))
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(32), index=True, unique=True)
@@ -10,6 +15,7 @@ class User(db.Model):
     email = db.Column(db.String(255), index=True, unique=True)
     authenticated = db.Column(db.Boolean, default=False)
     reviews = db.relationship('Review', backref='user', lazy='dynamic')
+    owns = db.relationship('Book', secondary=owns, lazy='subquery', backref=db.backref('user', lazy=True))
 
     def is_authenticated(self):
         return self.authenticated
@@ -52,3 +58,6 @@ class Review(db.Model):
 
     def __repr__(self):
         return "%s %s %s %s %s" % (self.id, self.rating, self.comment, self.user_id, self.book_id)
+
+
+
