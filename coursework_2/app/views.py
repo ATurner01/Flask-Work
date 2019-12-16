@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from passlib.hash import sha256_crypt
 from datetime import date
 import json
+import logging
 from app import app, db, models, login_manager, api
 from .forms import LoginForm, RegisterForm, PasswordUpdateForm
 
@@ -20,6 +21,7 @@ def unauthorized():
     if they are not logged in"""
 
     flash("You must be logged in to access this page.")
+    app.logger.error('Unauthorised page access attempted.')
     return redirect('/login')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -38,8 +40,10 @@ def Login():
                 db.session.add(user)
                 db.session.commit()
                 login_user(user, remember=True)
+                app.logger.info("Login attempt successful for " + user.username + ".") 
                 return redirect('/')
             else:
+                app.logger.error("Unauthorised account access attempted for " + user.username + ".")
                 flash("Incorrect username or password.")
         else:
             flash("Account does not exist.")
@@ -63,12 +67,14 @@ def Register():
             db.session.add(user)
             db.session.commit()
             flash("Account creation successful. You may now login.")
+            app.logger.info("Created account " + user.username + ".")
             return redirect('/login')
         except IntegrityError:
             #In the event the user enters a username that is already in use, rollback the current session
             #and have them try again
             db.session.rollback()
             flash("Error. Username is already in use. Please choose a different one.")
+            app.logger.error("Attempted to create new account with an existing username.")
 
     return render_template("register.html",
                            title="Register",
@@ -92,6 +98,7 @@ def UpdatePassword():
                 db.session.add(user)
                 db.session.commit()
                 flash("Password updated successfully.")
+                app.logger.info("Successfully changed password for " + user.username + ".")
                 return redirect('/account')
             else:
                 flash("You must confirm your password by entering the same password twice.")
@@ -109,10 +116,12 @@ def Logout():
     """Logout the current user (if there is a user currently logged in)"""
 
     user = current_user
+    name = user.username
     user.authenticated = False #Update the state of the user to make them unauthorised
     db.session.add(user)
     db.session.commit()
     logout_user() #Calls flask-login's logout function to ensure session is correctly terminated
+    app.logger.info("Successfully logged out " + name + ".")
 
     return redirect('/')
 
@@ -199,6 +208,7 @@ def AddBook():
         user.owns.append(book)
         db.session.add(user)
         db.session.commit()
+        app.logger.info("Added book to " + user.username + "'s collection.")
     except IntegrityError:
         db.session.rollback()
         
