@@ -1,9 +1,11 @@
 from flask import render_template, flash, redirect, request
 from flask_login import login_required, login_user, logout_user, current_user
+from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from passlib.hash import sha256_crypt
 from datetime import date
-from app import app, db, models, login_manager
+import json
+from app import app, db, models, login_manager, api
 from .forms import LoginForm, RegisterForm, PasswordUpdateForm
 
 @login_manager.user_loader
@@ -178,3 +180,27 @@ def Collection():
                            title="Collection",
                            user=user,
                            books=books)
+
+@app.route('/add_book', methods=['POST'])
+@login_required
+def AddBook():
+    """Allows a user to add a book to their personal collection"""
+
+    #Retrieve the data from the AJAX request and parse the data as an integer
+    data = json.loads(request.data)
+    book_id = int(data.get('book_id'))
+
+    #Look iup both the current user and the book that was selected
+    user = current_user
+    book = models.Book.query.get(book_id)
+    user = models.User.query.get(user.id)
+    #Attepts to add the selected book to the users list of owned books. Incase an error occurs (we try to add 2 of the same book), rollback the database and abort commit
+    try:
+        user.owns.append(book)
+        db.session.add(user)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        
+
+    return json.dumps({'status': 'OK', 'book_id': book_id})

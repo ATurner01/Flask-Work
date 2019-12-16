@@ -9,8 +9,8 @@
       <p>Author: {{ book.author }}</p>
       <p>Release Date: {{ book.release_date }}</p><br>
 
-      <form action="" method="post" name="Add">
-        <input type="button" value="Add Book to Collection">
+      <form id="add" action="" method="post" name="Add">
+        <input id="{{ book.id }}" type="button" value="Add Book to Collection">
       </form>
     </div>
   </div>
