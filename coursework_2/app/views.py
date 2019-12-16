@@ -136,6 +136,8 @@ def Account():
 
 @app.route('/list_books')
 def ListBooks():
+    """Lists all the current books stored in the database"""
+    
     user = current_user
     books = models.Book.query.all()
 
@@ -146,8 +148,12 @@ def ListBooks():
 
 @app.route('/details', methods=['GET', 'POST'])
 def Details():
+    """Lists the specific details of a given book"""
+    
     user = current_user
+    #The ID for a given book is provided through a HTML form, therefore we need to request that ID from the form
     id = request.form.getlist('id')
+    #Queries the Book table to get the book relating to the provided ID from the form
     book = models.Book.query.get(id[0])
 
     return render_template("details.html",
@@ -155,4 +161,20 @@ def Details():
                            user=user,
                            book=book)
 
+@app.route('/collection')
+@login_required
+def Collection():
+    """Lists all the books that the user currently owns"""
+    
+    user = current_user
+    #First, we need to query our helper table to find all the books this specific user owns
+    owned_books = db.session.query(models.owns).filter_by(user_id=user.id).all()
+    #Next, we find all the books the user owns from the Book table
+    books = []
+    for i in range(0, len(owned_books)):
+        books.append(models.Book.query.get(owned_books[i][1])) #owned_books is a 2D array, where [i][0] is the User ID and [i][1] is the Book ID
 
+    return render_template("collection.html",
+                           title="Collection",
+                           user=user,
+                           books=books)

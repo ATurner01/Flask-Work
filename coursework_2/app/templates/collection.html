@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Book Collection</h1>
+  {% for book in books %}
+    <div class="container-fluid border border-dark row">
+      <div class="col-md-6">
+        <p>Title: {{ book.title }}</p>
+        <p>Author: {{ book.author }}</p>
+        <p>Release Date: {{ book.release_date }}</p>
+        <form action="/details" method="post" name="Details">
+          <input type="button" value="View More Details" onclick="this.form.submit()">
+          <input type="hidden" name="id" value="{{ book.id }}">
+        </form>
+      </div>
+      <div class="col-md-6">
+        {% if book.image %}
+          <img style="float:right;" src="{{ book.image }}" alt="Cover Image for {{ book.title }}" height="75" width="75">
+        {% else %}
+          <p style="float:right;">No image provided</p>
+        {% endif %}
+      </div>
+    </div>
+    <br>
+  {% endfor %}
+{% endblock %}
