@@ -18,6 +18,8 @@ $(document).ready(function() {
 
       success: function(response){
         console.log(response);
+
+        $("#success").text("Book successfully added to collection!")
       },
 
       error: function(error){
