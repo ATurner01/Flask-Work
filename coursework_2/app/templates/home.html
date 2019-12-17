@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
   <h1>Home</h1>
-  <p>We're in.</p>
+  {% if user.authenticated %}
+  <p>Welcome, {{ user.username }}!</p>
+  <p>You can navigate the website using the navigation bar at the top of the page. From there, you can view all the books contained with out system and also look at your personal collection of books based on the books you have added to it.</p>
+  {% else %}
+  <p>Welcome, in order to make full use of the features of this site, you must be logged in.</p>
+  <p>To log in, please click the button in the top right of the page. Don't have an account? You can create one <a href="/register">here</a>.</p>
+  {% endif %}
 {% endblock %}
